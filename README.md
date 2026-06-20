@@ -1,6 +1,8 @@
 <div align="center">
 
-![Logo](https://via.placeholder.com/150x150)
+<p align="center">
+  <img src="img/logo-w.png" alt="Logo" width="250">
+</p>
 
 # Manutenção Preditiva de Aeronaves com Redes RNN e LSTM
 
