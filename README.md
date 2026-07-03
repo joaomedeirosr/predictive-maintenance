@@ -166,7 +166,7 @@ Esse projeto é mantido por:
       <a href="https://github.com/oxschellen">
         <img src="https://github.com/oxschellen.png" width="100px;" alt="Membro 4"/>
         <br />
-        <sub><b>Membro 4</b></sub>
+        <sub><b>Carlos Schellenberger</b></sub>
       </a>
     </td>
   </tr>
