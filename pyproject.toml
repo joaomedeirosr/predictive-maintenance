@@ -1,0 +1,9 @@
+[project]
+name = "predictive-maintenance"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.5.0",
+    "pandas>=3.0.3",
+    "pre-commit>=4.6.0",
+]
