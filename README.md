@@ -163,8 +163,8 @@ Esse projeto é mantido por:
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/usuario4">
-        <img src="https://github.com/usuario4.png" width="100px;" alt="Membro 4"/>
+      <a href="https://github.com/oxschellen">
+        <img src="https://github.com/oxschellen.png" width="100px;" alt="Membro 4"/>
         <br />
         <sub><b>Membro 4</b></sub>
       </a>
