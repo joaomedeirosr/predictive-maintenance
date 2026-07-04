@@ -23,10 +23,14 @@
   - [📑 Menu](#-menu)
   - [📝 Descrição Inicial do Problema](#-descrição-inicial-do-problema)
   - [🎯 Objetivo geral](#-objetivo-geral)
+  - [✈️ Overview](#-Entendimento)  
   - [🏗️ Estrutura inicial do projeto](#️-estrutura-inicial-do-projeto)
   - [📆 Etapa atual do desenvolvimento](#-etapa-atual-do-desenvolvimento)
     - [💾 1. Carregamento e limpeza dos dados](#-1-carregamento-e-limpeza-dos-dados)
     - [🧹 2. Limpeza dos dados](#-2-limpeza-dos-dados)
+    - [🔢 3. Implementação da RUL](#-3-implementacao-da_rul)
+    - [🎯 4. Criação da variável alvo](#-4-criacao_variavel_alvo)
+    - [⚖️ 5. Normalização dos dados](#-5-normalizacao-dos-dados)
   - [📚 Dependencies and Libs](#-dependencies-and-libs)
   - [❗ Requirements](#-requirements)
   - [✅ Status do projeto](#-status-do-projeto)
@@ -48,7 +52,41 @@ Este projeto utiliza dados históricos de operação e leituras de sensores para
 ## 🎯 Objetivo geral
 Desenvolver um modelo preditivo baseado em Redes Neurais Recorrentes (RNN) e Long Short-Term Memory (LSTM), capaz de identificar motores de aeronaves com risco de falha a partir de séries temporais contendo dados operacionais e medições de sensores.
 
+<a id="Entendimento"></a>
 
+## ✈️ Overview
+O projeto utiliza o conjunto de dados NASA C-MAPSS (FD001) para prever se um motor irá falhar dentro de uma janela de 30 ciclos.
+
+### 📊 Estrutura do Dataset NASA C-MAPSS
+
+| **Coluna** | **Descrição** | **Utilização** |
+|------------|---------------|----------------|
+| **id** | Identificador do motor | Usado para identificar cada motor e calcular sua vida útil. Não entra como atributo de entrada. |
+| **cycle** | Ciclo de operação | Representa o desgaste ao longo do tempo e é usado para calcular a RUL. |
+| **setting1, setting2, setting3** | Condições operacionais | Variáveis preditoras que representam diferentes condições de operação. |
+| **sensor1 a sensor21** | Leituras dos sensores | Variáveis contínuas que refletem o estado operacional do motor. |
+| **RUL** | Vida útil restante | Calculada no pré-processamento. Indica quantos ciclos restam até a falha. |
+| **failure_within_w1** | Variável alvo (0 ou 1) | Indica se o motor falhará nos próximos 30 ciclos (1) ou não (0). |
+
+### 🔳 Sensores
+Os sensor1 a sensor21 monitoram aspectos como temperatura, pressão, fluxo e velocidade. Embora a NASA não forneça o significado físico de cada sensor, para que os pesquisadores foquem no desenvolvimento dos algoritmos de prognóstico e não em um motor aeronáutico específico,  eles refletem o estado operacional do motor e permitem identificar padrões de degradação.
+Durante a análise exploratória, sensores com pouca variação podem ser descartados, pois não contribuem para o aprendizado do modelo.
+
+### 🔢 Remaining Useful Life (RUL)
+A RUL indica quantos ciclos restam antes da falha do motor.
+Exemplo: Motor 10
+ * Maior ciclo registrado: 192
+ * Observando o ciclo 50:
+
+    𝑅𝑈𝐿 = 192 − 50 = 142
+
+Ou seja, o motor ainda possui aproximadamente 142 ciclos antes da falha.
+
+### 🎯 Criação da Variável Alvo
+Definimos uma janela de previsão de 30 ciclos:
+ * Se RUL ≤ 30 → failure_within_w1 = 1
+ * Caso contrário → failure_within_w1 = 0
+Essa janela garante que o modelo alerte sobre falhas com antecedência suficiente para programar a manutenção.
 
 <a id="estrutura"></a>
 
@@ -62,7 +100,9 @@ predictive-maintenance/
 │   └── PM_truth.txt
 │
 ├── src/
+    ├── constants.py
 │   ├── data_loader.py
+    ├── feature_engineering.py
 │   ├── preprocess.py
 │   └── main.py
 │
@@ -74,9 +114,9 @@ predictive-maintenance/
 
 <a id="etapa-atual-do-desenvolvimento"></a>
 
-## 📆 Etapa atual do desenvolvimento
+## 📆 Etapas do desenvolvimento
 
-Nesta primeira etapa foi implementada a estrutura inicial do projeto, contemplando:
+* Nesta primeira etapa foi implementada a estrutura inicial do projeto, contemplando:
 
 <a id="load"></a>
 
@@ -108,6 +148,14 @@ truth_df = cleaner.remove_empty_columns(truth_df)
 Essa etapa garante que apenas colunas com informações relevantes sejam utilizadas nas próximas fases do projeto.
 
 ---
+* Nesta segunda etapa foi implementada a biblioteca numpy, contemplando:
+
+### 🔢 3. Implementação da RUL
+
+### 🎯 4. Criação da variável alvo
+
+### ⚖️ 5. Normalização dos dados
+
 
 <a id="documentation"></a>
 
@@ -125,6 +173,7 @@ Essa etapa garante que apenas colunas com informações relevantes sejam utiliza
 ## ✅ Status do projeto
 
 🚧 Em desenvolvimento – Etapa 1 concluída: Estrutura inicial, carregamento e limpeza dos dados.
+                      – Etapa 2 concluída: Normalização através da biblioteca numpy.
 
 
 <a id="license"></a>
