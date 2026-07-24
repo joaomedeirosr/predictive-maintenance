@@ -16,8 +16,8 @@ calcula uma acuracia simples no conjunto de teste.
 ## Execucao
 
 ```powershell
-python -m pip install -r requirements.txt
-python src/main.py --epochs 20 --batch-size 256
+python -m pip install .
+python src/main.py
 ```
 
 Ao final, o programa exibe a matriz de confusao e precision, recall e F1 no

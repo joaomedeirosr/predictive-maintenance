@@ -106,7 +106,7 @@ predictive-maintenance/
 │   ├── preprocess.py
 │   └── main.py
 │
-├── requirements.txt
+├── pyproject.toml
 └── README.md
 ```
 
