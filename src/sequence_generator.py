@@ -25,12 +25,12 @@ class SequenceGenerator:
         feature_array = feature_df[seq_cols].values
         num_elements = feature_array.shape[0]
 
-        if num_elements <= self.sequence_length:
+        if num_elements < self.sequence_length:
             return
 
         for start, stop in zip(
-            range(0, num_elements - self.sequence_length),
-            range(self.sequence_length, num_elements)
+            range(0, num_elements - self.sequence_length + 1),
+            range(self.sequence_length, num_elements + 1)
         ):
             yield feature_array[start:stop].astype(np.float32)
 
@@ -71,10 +71,10 @@ class SequenceGenerator:
         label_array = label_df[label].values
         num_elements = label_array.shape[0]
 
-        if num_elements <= self.sequence_length:
+        if num_elements < self.sequence_length:
             return np.empty((0, len(label)), dtype=np.float32)
 
-        return label_array[self.sequence_length:].astype(np.float32)
+        return label_array[self.sequence_length - 1:].astype(np.float32)
 
     def create_label_dataset(
         self,

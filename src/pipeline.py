@@ -1,10 +1,12 @@
+from pathlib import Path
 from data_loader import DataLoader
 from preprocess import DataCleaner, Normalize
 from feature_engineering import FeatureEngineering
 
 
-def prepare_data():
-    loader = DataLoader("../data")
+def prepare_data(data_dir=None):
+    project_root = Path(__file__).resolve().parents[1]
+    loader = DataLoader(data_dir or project_root / "data")
     cleaner = DataCleaner()
 
     train_df, test_df, truth_df = loader.load_all()

@@ -9,18 +9,18 @@ class DataLoader:
 
     def load_train_data(self) -> pd.DataFrame:
     
-        file_path = self.data_dir / "PM_train.txt"
-        return pd.read_csv(file_path, sep=" ", header=None)
+        file_path = self.data_dir / "pm_train.txt"
+        return pd.read_csv(file_path, sep=r"\s+", header=None)
 
     def load_test_data(self) -> pd.DataFrame:
 
-        file_path = self.data_dir / "PM_test.txt"
-        return pd.read_csv(file_path, sep=" ", header=None)
+        file_path = self.data_dir / "pm_test.txt"
+        return pd.read_csv(file_path, sep=r"\s+", header=None)
 
     def load_truth_data(self) -> pd.DataFrame:
       
-        file_path = self.data_dir / "PM_truth.txt"
-        return pd.read_csv(file_path, sep=" ", header=None)
+        file_path = self.data_dir / "pm_truth.txt"
+        return pd.read_csv(file_path, sep=r"\s+", header=None)
 
     def load_all(self):
        
