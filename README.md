@@ -157,6 +157,107 @@ Essa etapa garante que apenas colunas com informações relevantes sejam utiliza
 ### ⚖️ 5. Normalização dos dados
 
 
+<a id="numpy"></a>
+
+## 🔢⚖️ Implementação com NumPy (Entrega 2)
+
+Nesta etapa foi implementado o uso da biblioteca NumPy para calcular o RUL, criar a variável alvo de classificação e normalizar os dados antes da etapa de treinamento. O fluxo completo pode ser executado com `python src/main.py`.
+
+<a id="rul-numpy"></a>
+
+### 🔢 3. Implementação da RUL
+
+O módulo `src/feature_engineering.py` (classe `FeatureEngineering`) calcula o RUL usando NumPy:
+
+* `rul_with_numpy`: agrupa o treino por motor (`id`), obtém o ciclo máximo com `np.max` e calcula `RUL = ciclo_máximo - ciclo_atual`;
+* `rul_test`: calcula o RUL do teste combinando o ciclo máximo observado de cada motor com o valor real vindo do `pm_truth.txt`.
+
+```python
+train_df = FeatureEngineering.rul_with_numpy(train_df)
+test_df = FeatureEngineering.rul_test(test_df, truth_df)
+```
+
+<a id="target-variable"></a>
+
+### 🎯 4. Criação da variável alvo
+
+A partir do RUL, `generating_target_variable` cria a coluna binária `failure_within_w1` usando `np.where`: o valor é `1` quando o motor vai falhar dentro de uma janela de `w1` ciclos (padrão: 30) e `0` caso contrário.
+
+```python
+train_df = FeatureEngineering.generating_target_variable(train_df)
+```
+
+<a id="normalizacao-numpy"></a>
+
+### ⚖️ 5. Normalização dos dados
+
+A classe `Normalize` (em `src/preprocess.py`) normaliza as colunas de sensores/configurações com min-max usando NumPy (`np.min`, `np.max`), calculando os limites **apenas com o treino** e reaplicando os mesmos valores no teste, evitando vazamento de dados:
+
+```python
+train_df, data_min, data_max = Normalize.normalize_with_numpy(train_df)
+test_df = Normalize.normalize_test(test_df, data_min, data_max)
+```
+
+---
+
+<a id="pytorch"></a>
+
+## 🔥 Implementação em PyTorch (Entrega 3)
+
+Nesta etapa foi implementado o pipeline completo em PyTorch, responsável por carregar, processar, treinar e salvar um modelo de previsão de RUL (*Remaining Useful Life* — vida útil restante) dos motores.
+
+<a id="tensor-load"></a>
+
+### 📦 1. Carregamento dos dados em tensores
+
+O módulo `src/torch_data.py` contém a classe `TensorLoader`, responsável por ler os arquivos `.txt` diretamente como tensores do PyTorch (sem depender de pandas ou NumPy):
+
+```python
+loader = TensorLoader("data")
+train, test, truth = loader.load_all()
+```
+
+<a id="rul-norm"></a>
+
+### 🧮 2. Processamento dos dados (RUL e normalização)
+
+Ainda em `src/torch_data.py`:
+
+* `compute_train_rul`: calcula o RUL de cada linha do treino (`RUL = ciclo_máximo_do_motor - ciclo_atual`);
+* `compute_test_rul`: calcula o RUL do teste a partir do `pm_truth.txt`;
+* `normalize_sensors`: normaliza as colunas de sensores (min-max), ajustando a escala apenas com os dados de treino.
+
+<a id="tensordataset"></a>
+
+### 🗂️ 3. TensorDataset e DataLoader
+
+A função `build_dataset` empacota as features (configs operacionais + sensores) e o RUL em um `torch.utils.data.TensorDataset`, que é consumido em lotes (*batches*) através de um `torch.utils.data.DataLoader`.
+
+<a id="model"></a>
+
+### 🧠 4. Modelo em PyTorch
+
+O módulo `src/model.py` define `RULModel`, uma rede neural feedforward simples (`Linear → ReLU → Linear`) que recebe as colunas de configs/sensores de uma linha e prevê o RUL correspondente.
+
+<a id="training"></a>
+
+### 🎯 5. Treinamento, avaliação e salvamento
+
+O módulo `src/train.py` executa o loop de treinamento:
+
+* calcula o erro (MAE — Mean Absolute Error) em treino e teste a cada época e imprime no terminal;
+* usa o otimizador `Adam` para ajustar os pesos do modelo;
+* ao final, salva os pesos treinados em `models/rul_model.pt`.
+
+Para rodar o treinamento:
+
+```bash
+cd src
+uv run python train.py
+```
+
+---
+
 <a id="documentation"></a>
 
 ## 📚 Dependencies and Libs
@@ -199,23 +300,30 @@ Esse projeto é mantido por:
     </td>
     <td align="center">
       <a href="https://github.com/renattabatista">
-        <img src="https://github.com/renattabatista.png" width="100px;" alt="Rafaella"/>
+        <img src="https://github.com/renattabatista.png" width="100px;" alt="Rafaella Batista"/>
         <br />
         <sub><b>Rafaella Batista</b></sub>
       </a>
     </td>
     <td align="center">
       <a href="https://github.com/izabella-araujo">
-        <img src="https://github.com/izabella-araujo.png" width="100px;" alt="Membro 3"/>
+        <img src="https://github.com/izabella-araujo.png" width="100px;" alt="Izabella Araujo"/>
         <br />
         <sub><b>Izabella Araujo</b></sub>
       </a>
     </td>
     <td align="center">
       <a href="https://github.com/oxschellen">
-        <img src="https://github.com/oxschellen.png" width="100px;" alt="Membro 4"/>
+        <img src="https://github.com/oxschellen.png" width="100px;" alt="Carlos Schellenberger"/>
         <br />
         <sub><b>Carlos Schellenberger</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/larisse13">
+        <img src="https://github.com/larisse13.png" width="100px;" alt="Larisse Carvalho"/>
+        <br />
+        <sub><b>Larisse Carvalho</b></sub>
       </a>
     </td>
   </tr>
