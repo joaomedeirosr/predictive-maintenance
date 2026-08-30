@@ -8,4 +8,8 @@ dependencies = [
     "pre-commit>=4.6.0",
     "scikit-learn",
     "torch",
+    "pytest>=9.1.1",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = [".", "src"]
